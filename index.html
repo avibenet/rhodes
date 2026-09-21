@@ -82,10 +82,26 @@
   .followbtn.lockbtn{right:86px;}
   .followbtn.on{background:#c9502e;color:#fff;}
   .gmap{margin-top:12px;border-radius:12px;overflow:hidden;background:#e9f2f6;padding:6px;}
+  .gmap summary{cursor:pointer;list-style:none;display:flex;align-items:center;}
+  .gmap summary::-webkit-details-marker{display:none;}
+  .gmap summary::after{content:"▾";margin-inline-start:auto;color:#4d6675;}
+  .gmap[open] summary::after{content:"▴";}
+  .gmap iframe{margin-top:6px;}
   .gmap iframe{width:100%;height:440px;border:0;border-radius:10px;display:block;}
   .maplabel{font-size:.85rem;color:#4d6675;padding:6px 8px 4px;font-weight:600;}
   .numpin{background:#0e4f6e;color:#fff;border:2px solid #fff;border-radius:50%;width:32px;height:32px;display:grid;place-content:center;font-weight:700;font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,.4);}
   .numpin.shop{background:#b98a2e;} .numpin.opt{background:#9db4c0;}
+  .numpin.skippedpin{background:#c9c2b4;color:#7a7360;box-shadow:none;}
+  .rowctl{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+  .skipbox{display:flex;align-items:center;gap:5px;font-size:.85rem;color:#4d6675;cursor:pointer;}
+  .skipbox input{width:16px;height:16px;}
+  .ordwrap{display:flex;gap:4px;}
+  .ordbtn{width:28px;height:28px;border-radius:6px;border:1px solid #9db4c0;background:#fff;color:var(--sea);font-size:.85rem;cursor:pointer;}
+  .ordbtn:disabled{opacity:.3;cursor:not-allowed;}
+  .stops li.skipped{opacity:.5;}
+  .stops li.skipped .tt{text-decoration:line-through;}
+  .routesummary{margin-top:10px;padding:10px 14px;background:#fdf7e8;border-radius:8px;font-size:.9rem;font-weight:600;color:#8a6a1e;text-align:center;}
+  .routesummary.warn{background:#fdf0eb;color:#c9502e;}
   .mepin{background:#c9502e;border:3px solid #fff;border-radius:50%;width:18px;height:18px;box-shadow:0 0 0 6px rgba(201,80,46,.25);}
   .leaflet-popup-content{direction:rtl;text-align:right;font-family:inherit;font-size:.95rem;line-height:1.5;min-width:200px;} .leaflet-popup-content a{display:inline-block;margin-top:6px;background:#0e4f6e;color:#fff;text-decoration:none;border-radius:99px;padding:5px 12px;font-size:.85rem;}
   .map .legend{font-size:.78rem;color:#5c7482;padding:4px 8px 6px;display:flex;gap:14px;flex-wrap:wrap;}
@@ -183,13 +199,14 @@
       <div class="legend"><span class="l1">תחנה</span><span class="l2">חנויות לילדים</span><span class="l3">אופציונלי</span><span class="l4">אתם (GPS)</span> · אפשר להגדיל ולהזיז</div>
     </div>
     <!-- google map -->
-    <div class="gmap">
-      <div class="maplabel">🗺️ אותו מסלול בגוגל מפות (בלי מספרים)</div>
+    <details class="gmap">
+      <summary class="maplabel">🗺️ אותו מסלול בגוגל מפות (בלי מספרים) — לחץ לפתיחה</summary>
       <iframe id="gframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+    </details>
 
 
     <ul class="stops" id="stops"></ul>
+    <div id="routeSummary" class="routesummary"></div>
     <div class="highlight">🌙 בערב: הילדים סיימו. מי מהמבוגרים שרוצה — חוזר לעיר העתיקה המוארת (10 דקות מהנמל, דרך שער הים) עד ~23:00. לוודא באונייה את שעת "כולם על הסיפון".</div>
     </details>
   </div>
@@ -214,6 +231,7 @@
         <li><span class="t">16:30-14:00</span> פעילות אחר הצהריים: מפעל שמן הזיתים Spiridi (קרוב, כ-30-40 דקות) — ואולי גם רכיבת סוסים בפורני ו/או סיבוב בבאגי (בהמתנה לאישור זמינות מהחברות)</li>
         <li><span class="t">17:00-16:30</span> חזרה לספינה — נשארות 3 שעות ביטחון עד ההפלגה ב-20:00</li>
       </ul>
+      <div class="why">💡 אופציה נוספת, עדיין לא מתוכננת: סירת "הצוללת" (Creta Semi-Submarine) — יוצאת מהנמל, יציאות 11:30/13:30/15:30, כ-1:25 שעות, מאכילים דגים ורואים אותם דרך חלונות מתחת לקו המים. 💶 כ-16.5 אירו מבוגר, 11.5 ילד 6–12, 6.5 ילד 2–5.</div>
     </div>
 
     <div class="plan alt">
@@ -249,22 +267,23 @@
 <script>
 // ---------- Rhodes stops (order = route) ----------
 const STOPS = [
- {t:"15:50", name:"נמל רודוס — ירידה מהאונייה", sub:"יורדים ופונים צפונה (שמאלה) לטיילת שלאורך המים. בצד שמאל חומות העיר העתיקה, בצד ימין הים. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"},
- {t:"16:05", name:"טחנות הרוח של מנדראקי", sub:"שלוש טחנות אבן מימי הביניים על שובר הגלים — פעם טחנו בהן תבואה שהגיעה בספינות. נקודת הצילום הכי יפה של הנמל. 💶 חינם", lat:36.449136, lng:28.227995, pid:"ChIJvWVAledhlRQR_2jmgEadHb8", q:"Windmills of Rhodes", game:"מי מזהה ראשון מרחוק את שלוש הטחנות?"},
- {t:"16:15", name:"מצודת סנט ניקולס", sub:"קצה שובר הגלים — מבוי סתום, חוזרים באותו נתיב. מצודה מהמאה ה-15, היום מגדלור. רואים את האונייה שלנו מהצד. אופציונלי, לדלג אם מתעכבים. 💶 חינם", lat:36.451266, lng:28.228052, pid:"ChIJhWNka-dhlRQRKC6cw9jimaY", q:"Saint Nicholas Fortress Rhodes", opt:true, game:"למצוא את האונייה שלנו ולזהות את קומת החדר"},
- {t:"16:30", name:"פסלי האיילים", sub:"אייל ואיילה מברונזה — סמל רודוס. לפי האגדה כאן עמד הקולוסוס, מפלאי העולם. ⚠️ מכאן חוזרים על אותו כביש ועוקפים את בסיס המרינה — אין מעבר ישיר לקולנוע. 💶 חינם", lat:36.451157, lng:28.226573, pid:"ChIJsSgjHedhlRQRWJnpA706G6g", q:"Doe Statue Rhodes", game:"מי האייל ומי האיילה? (לאייל יש קרניים) + תמונת \"קולוסוס\": רגליים פשוקות מול הכניסה לנמל"},
- {t:"16:45", name:"Throne of Helios — קולנוע 9D", sub:"כיסאות זזים, רוח, גשם, ריחות. סרט על ההיסטוריה של רודוס ומרוץ מרכבות. בעברית. הקרנה כל 30 דקות, מגיעים 15 דקות לפני. ליד סטארבקס. 💶 13 אירו מבוגר, 9 ילד עד 12 — כ-167 אירו לכולנו", lat:36.449789, lng:28.224379, pid:"ChIJT_vVEuZhlRQROIxoeXI22uo", q:"Throne of Helios Rhodes", game:"אחרי הסרט — כל ילד אומר דבר אחד שלמד על רודוס"},
- {t:"17:38", name:"One Euro Shop", sub:"מזכרות קטנות צמודות לקולנוע: מגנטים, מחזיקי מפתחות. הרבה דברים ב-1 אירו. מתאים לקטנים. 💶 לפי הקנייה", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true, game:"תקציב: כל ילד מקבל סכום קבוע ומחליט לבד מה קונים"},
- {t:"17:48", name:"The Cartoon Store", sub:"מרצ'נדייז: דיסני, פוקימון, מארוול, נינטנדו. יקר יחסית. 💶 לפי הקנייה", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true},
- {t:"18:01", name:"Karabáki", sub:"ציוד יצירה, קלפי פוקימון ויו-גי-הו, מנגה. מתאימה לגדולים. מחירים טובים. 💶 לפי הקנייה", lat:36.448853, lng:28.220362, pid:"ChIJDSBAAo5hlRQRZcr_USo1ttM", q:"Karabaki Rhodes", shop:true},
- {t:"18:18", name:"שער ד'אמבואז — כניסה לעיר העתיקה", sub:"גשר מעל חפיר יבש ושני מגדלים משנת 1512. מרגישים שנכנסים לטירה. 💶 חינם", lat:36.445999, lng:28.222468, pid:"ChIJ0QKQcwBhlRQR99ZuM26m6YE", q:"Gate d'Amboise Rhodes", game:"מתחילה \"ספירת השערים\": כמה שערים עוברים עד שער הים? ומשימת \"מרגל\": למצוא דלת עץ ישנה, סמל על קיר, חלון עם סורג"},
- {t:"18:27", name:"רחוב האבירים", sub:"רחוב מרוצף מהמאה ה-14, בתי האבירים של כל מדינה עם סמלי מגן חרוטים על הקירות. 💶 חינם", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes", game:"ציד מגני אבירים: מי מוצא הכי הרבה. בונוס: מגן עם אריה, פרחי שושן (צרפת), צלב"},
- {t:"18:46", name:"Geppetto's House", sub:"צעצועי עץ בעבודת יד — בובות, משחקים. סטייה של 3 דקות (Ippodamou 18). 💶 לפי הקנייה", lat:36.443306, lng:28.224101, pid:"ChIJ4YrA-uthlRQRy-es4fIRvjA", q:"Geppetto's House Rhodes", shop:true},
- {t:"18:59", name:"כיכר היפוקרטס ורחוב סוקרטוס", sub:"כיכר עם מזרקה, רחוב הקניות הראשי. מעבר, לא חובה לעצור. 💶 חינם להסתובב; מזכרות 3–10 אירו", lat:36.443649, lng:28.228290, pid:"ChIJiRh86elhlRQRt_HtFMgzFDA", q:"Hippocrates Square Rhodes", game:"מי רואה ראשון את מגדל השעון מעל הבתים?"},
- {t:"19:16", name:"שער הים — יציאה לנמל", sub:"השער הכי מרשים, שני מגדלים עגולים מול הנמל. 💶 חינם", lat:36.444082, lng:28.228281, pid:"ChIJVTmNDcJhlRQRVSw_DJwl2UM", q:"Sea Gate Rhodes", game:"סוף ספירת השערים — מי צדק? ותמונה קבוצתית מול השער"},
- {t:"19:26", name:"נמל רודוס — חזרה לאונייה", sub:"עולים עם המנו קארד. ארוחת ערב 20:00. הפלגה 23:59 — נשארים כ-34 דקות ביטחון. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"}
+ {t:"15:50", name:"נמל רודוס — ירידה מהאונייה", sub:"יורדים ופונים צפונה (שמאלה) לטיילת שלאורך המים. בצד שמאל חומות העיר העתיקה, בצד ימין הים. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port", dwell:8, locked:true},
+ {t:"16:05", name:"טחנות הרוח של מנדראקי", sub:"שלוש טחנות אבן מימי הביניים על שובר הגלים — פעם טחנו בהן תבואה שהגיעה בספינות. נקודת הצילום הכי יפה של הנמל. 💶 חינם", lat:36.449136, lng:28.227995, pid:"ChIJvWVAledhlRQR_2jmgEadHb8", q:"Windmills of Rhodes", game:"מי מזהה ראשון מרחוק את שלוש הטחנות?", dwell:5},
+ {t:"16:15", name:"מצודת סנט ניקולס", sub:"קצה שובר הגלים — מבוי סתום, חוזרים באותו נתיב. מצודה מהמאה ה-15, היום מגדלור. רואים את האונייה שלנו מהצד. 💶 חינם", lat:36.451266, lng:28.228052, pid:"ChIJhWNka-dhlRQRKC6cw9jimaY", q:"Saint Nicholas Fortress Rhodes", opt:true, game:"למצוא את האונייה שלנו ולזהות את קומת החדר", dwell:11},
+ {t:"16:30", name:"פסלי האיילים", sub:"אייל ואיילה מברונזה — סמל רודוס. לפי האגדה כאן עמד הקולוסוס, מפלאי העולם. ⚠️ מכאן חוזרים על אותו כביש ועוקפים את בסיס המרינה — אין מעבר ישיר לקולנוע. 💶 חינם", lat:36.451157, lng:28.226573, pid:"ChIJsSgjHedhlRQRWJnpA706G6g", q:"Doe Statue Rhodes", game:"מי האייל ומי האיילה? (לאייל יש קרניים) + תמונת \"קולוסוס\": רגליים פשוקות מול הכניסה לנמל", dwell:8},
+ {t:"16:45", name:"Throne of Helios — קולנוע 9D", sub:"כיסאות זזים, רוח, גשם, ריחות. סרט על ההיסטוריה של רודוס ומרוץ מרכבות. בעברית. הקרנה כל 30 דקות, מגיעים 15 דקות לפני. ליד סטארבקס. 💶 13 אירו מבוגר, 9 ילד עד 12 — כ-167 אירו לכולנו", lat:36.449789, lng:28.224379, pid:"ChIJT_vVEuZhlRQROIxoeXI22uo", q:"Throne of Helios Rhodes", game:"אחרי הסרט — כל ילד אומר דבר אחד שלמד על רודוס", dwell:50},
+ {t:"", name:"האקווריום של רודוס", sub:"בניין ארט-דקו משנות ה-30, בנוי כמו מערה תת-ימית, 40 בריכות עם דגים ים-תיכוניים, תמנונים וצבי ים. קטן — 20-30 דקות מספיקות. רחוק בקצה הצפוני — ברוב הסיכויים ניקח הסעה/מונית קצרה במקום ללכת ברגל (הליכה מוסיפה כמעט שעה להלוך-חזור). 💶 6.5 אירו למבוגר + עלות הסעה", lat:36.457114, lng:28.220728, pid:"ChIJgYrBVOJhlRQR4gbSvvCDPlk", q:"Aquarium of Rhodes", opt:true, dwell:35, defaultSkip:true},
+ {t:"17:35", name:"One Euro Shop", sub:"מזכרות קטנות צמודות לקולנוע: מגנטים, מחזיקי מפתחות. הרבה דברים ב-1 אירו. מתאים לקטנים. 💶 לפי הקנייה", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true, game:"תקציב: כל ילד מקבל סכום קבוע ומחליט לבד מה קונים", dwell:8},
+ {t:"17:45", name:"The Cartoon Store", sub:"מרצ'נדייז: דיסני, פוקימון, מארוול, נינטנדו. יקר יחסית. 💶 לפי הקנייה", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true, dwell:10},
+ {t:"18:00", name:"Karabáki", sub:"ציוד יצירה, קלפי פוקימון ויו-גי-הו, מנגה. מתאימה לגדולים. מחירים טובים. 💶 לפי הקנייה", lat:36.448853, lng:28.220362, pid:"ChIJDSBAAo5hlRQRZcr_USo1ttM", q:"Karabaki Rhodes", shop:true, dwell:12},
+ {t:"18:25", name:"שער ד'אמבואז — כניסה לעיר העתיקה", sub:"גשר מעל חפיר יבש ושני מגדלים משנת 1512. מרגישים שנכנסים לטירה. 💶 חינם", lat:36.445999, lng:28.222468, pid:"ChIJ0QKQcwBhlRQR99ZuM26m6YE", q:"Gate d'Amboise Rhodes", game:"מתחילה \"ספירת השערים\": כמה שערים עוברים עד שער הים? ומשימת \"מרגל\": למצוא דלת עץ ישנה, סמל על קיר, חלון עם סורג", dwell:3},
+ {t:"18:30", name:"רחוב האבירים", sub:"רחוב מרוצף מהמאה ה-14, בתי האבירים של כל מדינה עם סמלי מגן חרוטים על הקירות. 💶 חינם", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes", game:"ציד מגני אבירים: מי מוצא הכי הרבה. בונוס: מגן עם אריה, פרחי שושן (צרפת), צלב", dwell:15},
+ {t:"18:50", name:"Geppetto's House", sub:"צעצועי עץ בעבודת יד — בובות, משחקים. סטייה של 3 דקות (Ippodamou 18). 💶 לפי הקנייה", lat:36.443306, lng:28.224101, pid:"ChIJ4YrA-uthlRQRy-es4fIRvjA", q:"Geppetto's House Rhodes", shop:true, dwell:8},
+ {t:"19:05", name:"כיכר היפוקרטס ורחוב סוקרטוס", sub:"כיכר עם מזרקה, רחוב הקניות הראשי. מעבר, לא חובה לעצור. 💶 חינם להסתובב; מזכרות 3–10 אירו", lat:36.443649, lng:28.228290, pid:"ChIJiRh86elhlRQRt_HtFMgzFDA", q:"Hippocrates Square Rhodes", dwell:15},
+ {t:"19:25", name:"שער הים — יציאה לנמל", sub:"השער הכי מרשים, שני מגדלים עגולים מול הנמל. 💶 חינם", lat:36.444082, lng:28.228281, pid:"ChIJVTmNDcJhlRQRVSw_DJwl2UM", q:"Sea Gate Rhodes", game:"סוף ספירת השערים — מי צדק? ותמונה קבוצתית מול השער", dwell:3},
+ {t:"19:45", name:"נמל רודוס — חזרה לאונייה", sub:"עולים עם המנו קארד. ארוחת ערב 20:00. הפלגה 23:59. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port", dwell:0, locked:true}
 ];
-const WALK_MIN = [7,5,4,7,3,2,3,5,6,4,5,2,7]; // דקות הליכה מהתחנה לתחנה הבאה (מדוד, כולל עיקוף שובר הגלים)
+
 
 const gmLink = s => "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.q)+"&query_place_id="+s.pid;
 const dirLink = (from,to,ways) => "https://www.google.com/maps/dir/?api=1&travelmode=walking&origin="+from.lat+","+from.lng+"&destination="+to.lat+","+to.lng+"&waypoints="+ways.map(s=>s.lat+","+s.lng).join("|");
@@ -275,40 +294,144 @@ const dirLink = (from,to,ways) => "https://www.google.com/maps/dir/?api=1&travel
 })();
 
 // ---------- stops list ----------
+// ---------- order / skip state ----------
+let order = STOPS.map(s=>s); // mutable working order (references same objects)
+order.forEach(s=>{ s.skip = !!s.defaultSkip; });
+
+function hav(aLat,aLng,bLat,bLng){const R=6371000,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+const AQ = STOPS[5]; // האקווריום — כנראה נוסעים אליו, לא הולכים
+const WALK_MPM = 70;      // מ' לדקה הליכה
+const DETOUR = 1.4;       // מקדם פיתולי רחוב אמיתי (מדוד מול ניווט אמיתי ברודוס העתיקה)
+const STOP_BUFFER = 4;    // דקות "בלת"ים" בכל תחנה — תמונות, ריכוז המשפחה, תור קטן
+function walkMinBetween(a,b){
+  const d = hav(a.lat,a.lng,b.lat,b.lng);
+  if(a===AQ||b===AQ) return Math.max(3, Math.round(d/200)); // קטע לאקווריום — כנראה נסיעה קצרה, לא הליכה
+  return Math.max(2, Math.round(d*DETOUR/WALK_MPM));
+}
+
+function recomputeTimes(){
+  const active = order.filter(s=>!s.skip);
+  let clock = toMin(STOPS[0].t); // 15:50, fixed arrival at port
+  active.forEach((s,i)=>{
+    if(i===0){ s.calcT = clock; }
+    else {
+      const w = walkMinBetween(active[i-1], s);
+      clock = clock + active[i-1].dwell + STOP_BUFFER + w;
+      s.calcT = clock;
+    }
+  });
+  return active;
+}
+
 const ul = document.getElementById("stops");
-STOPS.forEach((s,i)=>{
-  const li = document.createElement("li"); li.id="stop"+i;
-  const wt = i<WALK_MIN.length ? '<span class="walkto">🚶 '+WALK_MIN[i]+' דק\' להליכה לתחנה הבאה</span>' : '';
-  const nextNav = (i<STOPS.length-1) ? '<a class="navnext" href="'+dirLink(STOPS[i],STOPS[i+1],[])+'" target="_blank">🧭 נווט לתחנה הבאה</a>' : '';
-  li.innerHTML = '<div class="n'+(s.opt?' opt':'')+(s.shop?' shop':'')+'">'+(i+1)+'</div>'+
-    '<div class="body"><details><summary><span class="tt">'+s.t+'</span>'+s.name+'</summary>'+
-    '<div class="det"><div class="what">'+s.sub+'</div>'+(s.game?'<div class="game">🎲 '+s.game+'</div>':'')+
-    wt+'<div class="navrow"><a href="'+gmLink(s)+'" target="_blank">📷 תמונות וניווט למקום</a>'+nextNav+'</div></div></details></div>';
-  ul.appendChild(li);
-});
+
+function moveStop(stop, dir){
+  const interior = order.filter(s=>!s.locked);
+  const idx = interior.indexOf(stop);
+  const swapWith = idx+dir;
+  if(swapWith<0 || swapWith>=interior.length) return;
+  const a = interior[idx], b = interior[swapWith];
+  const ia = order.indexOf(a), ib = order.indexOf(b);
+  order[ia]=b; order[ib]=a;
+  renderStopsList();
+}
+
+function renderStopsList(){
+  const active = recomputeTimes();
+  const activeIdx = new Map(active.map((s,i)=>[s,i+1]));
+  ul.innerHTML = "";
+  const interior = order.filter(s=>!s.locked);
+  order.forEach((s)=>{
+    const li = document.createElement("li");
+    li.id = "stop_"+STOPS.indexOf(s);
+    if(s.skip) li.classList.add("skipped");
+    const num = s.skip ? "–" : activeIdx.get(s);
+    const timeStr = s.skip ? "מדולג" : fmt(s.calcT);
+    const nextActive = !s.skip ? active[activeIdx.get(s)] : null; // next in active list (for nav link) — computed below properly
+    const posInInterior = interior.indexOf(s);
+    const canUp = !s.locked && posInInterior>0;
+    const canDown = !s.locked && posInInterior<interior.length-1;
+    const skipCtrl = s.locked ? '' : '<label class="skipbox"><input type="checkbox" '+(s.skip?'':'checked')+' data-idx="'+STOPS.indexOf(s)+'">כלול</label>';
+    const orderCtrl = s.locked ? '' :
+      '<button class="ordbtn" data-dir="-1" data-idx="'+STOPS.indexOf(s)+'" '+(canUp?'':'disabled')+'>▲</button>'+
+      '<button class="ordbtn" data-dir="1" data-idx="'+STOPS.indexOf(s)+'" '+(canDown?'':'disabled')+'>▼</button>';
+    li.innerHTML = '<div class="n'+(s.opt?' opt':'')+(s.shop?' shop':'')+'">'+num+'</div>'+
+      '<div class="body"><details><summary><span class="tt">'+timeStr+'</span>'+s.name+'</summary>'+
+      '<div class="det"><div class="what">'+s.sub+'</div>'+(s.game?'<div class="game">🎲 '+s.game+'</div>':'')+
+      '<div class="rowctl">'+skipCtrl+'<span class="ordwrap">'+orderCtrl+'</span></div>'+
+      '<div class="navrow"><a href="'+gmLink(s)+'" target="_blank">📷 תמונות וניווט למקום</a></div></div></details></div>';
+    ul.appendChild(li);
+  });
+  // next-stop nav links: build after DOM insertion using active sequence
+  active.forEach((s,i)=>{
+    if(i<active.length-1){
+      const li = document.getElementById("stop_"+STOPS.indexOf(s));
+      const navrow = li.querySelector(".navrow");
+      const a = document.createElement("a");
+      a.className="navnext"; a.target="_blank";
+      a.href = dirLink(s, active[i+1], []);
+      a.textContent = "🧭 נווט לתחנה הבאה";
+      navrow.appendChild(a);
+      const w = walkMinBetween(s, active[i+1]);
+      const wt = document.createElement("span");
+      wt.className="walkto"; wt.textContent = "🚶 כ-"+w+" דק' הליכה לתחנה הבאה";
+      li.querySelector(".det").insertBefore(wt, li.querySelector(".navrow"));
+    }
+  });
+  ul.querySelectorAll(".skipbox input").forEach(cb=>cb.addEventListener("change",e=>{
+    const s = STOPS[+e.target.dataset.idx]; s.skip = !e.target.checked; renderStopsList(); updateMap();
+  }));
+  ul.querySelectorAll(".ordbtn").forEach(b=>b.addEventListener("click",e=>{
+    const s = STOPS[+e.target.dataset.idx]; moveStop(s, +e.target.dataset.dir); updateMap();
+  }));
+  const last = active[active.length-1];
+  const summary = document.getElementById("routeSummary");
+  if(summary && last){
+    const target = toMin("20:00");
+    const over = last.calcT - target;
+    if(over>0){
+      summary.className = "routesummary warn";
+      summary.textContent = "⚠️ חזרה משוערת "+fmt(last.calcT)+" — חורגת מזמן החזרה המתוכנן (20:00) בכ-"+over+" דקות. כדאי לקצר את המסלול: לדלג על תחנה או שתיים, או להעביר אותן אחורה בסדר.";
+    }else{
+      summary.className = "routesummary";
+      summary.textContent = "חזרה לאונייה משוערת: "+fmt(last.calcT)+" — נשארו כ-"+(-over)+" דקות מרווח עד ארוחת הערב ב-20:00 (בהתאם למה שסימנתם למעלה)";
+    }
+  }
+  render();
+}
+
+// ---------- progress helpers ----------
+const toMin = t => {const [h,m]=t.split(":").map(Number);return h*60+m;};
+const fmt = m => String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
 
 // ---------- real map (Leaflet + OpenStreetMap) ----------
-let lmap=null, meMarker=null;
+let lmap=null, meMarker=null, routeLayer=null;
 try{
   lmap=L.map('lmap',{scrollWheelZoom:false,dragging:false,touchZoom:false,doubleClickZoom:false,tap:false});
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(lmap);
-  const pts=STOPS.map(s=>[s.lat,s.lng]);
-  L.polyline(pts,{color:'#0e4f6e',weight:4,opacity:.75,dashArray:'8 6'}).addTo(lmap);
-  STOPS.forEach((s,i)=>{
-    const cls='numpin'+(s.shop?' shop':'')+(s.opt?' opt':'');
-    const dLng = (i===0? -0.00025 : (i===STOPS.length-1? 0.00025 : 0)); // 1 ו-14 זה לצד זה
-    const icon=L.divIcon({className:'',html:'<div class="'+cls+'">'+(i+1)+'</div>',iconSize:[32,32],iconAnchor:[16,16]});
-    L.marker([s.lat,s.lng+dLng],{icon}).addTo(lmap)
-      .bindPopup('<b>'+(i+1)+'. '+s.name+'</b><br><b>'+s.t+'</b> — '+s.sub+'<br><a href="'+gmLink(s)+'" target="_blank">📷 תמונות, ביקורות וניווט</a>',{maxWidth:280});
-  });
-  lmap.fitBounds(L.latLngBounds(pts).pad(0.12));
-}catch(e){document.getElementById('lmap').innerHTML='<div style="padding:20px;text-align:center;color:#5c7482">המפה צריכה אינטרנט. הכפתורים למטה פותחים את המסלול בגוגל מפות.</div>';}
+  routeLayer = L.layerGroup().addTo(lmap);
+}catch(e){document.getElementById('lmap').innerHTML='<div style="padding:20px;text-align:center;color:#5c7482">המפה צריכה אינטרנט. הכפתורים בכל תחנה פותחים ניווט בגוגל מפות.</div>';}
 
-// ---------- progress logic ----------
-const toMin = t => {const [h,m]=t.split(":").map(Number);return h*60+m;};
-const fmt = m => String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
-function plannedIndex(nowMin){let idx=-1;STOPS.forEach((s,i)=>{if(toMin(s.t)<=nowMin)idx=i;});return idx;}
-function dist(aLat,aLng,bLat,bLng){const R=6371000,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function updateMap(){
+  if(!lmap||!routeLayer) return;
+  routeLayer.clearLayers();
+  const active = order.filter(s=>!s.skip);
+  const activeIdx = new Map(active.map((s,i)=>[s,i+1]));
+  const pts = active.map(s=>[s.lat,s.lng]);
+  if(pts.length>1) L.polyline(pts,{color:'#0e4f6e',weight:4,opacity:.75,dashArray:'8 6'}).addTo(routeLayer);
+  order.forEach((s)=>{
+    const isActive = !s.skip;
+    const cls = 'numpin'+(s.shop?' shop':'')+(s.opt?' opt':'')+(isActive?'':' skippedpin');
+    let latOff=s.lat, lngOff=s.lng;
+    if(s===STOPS[0]) lngOff-=0.00025; if(s===STOPS[STOPS.length-1]) lngOff+=0.00025;
+    const label = isActive ? String(activeIdx.get(s)) : "×";
+    const icon=L.divIcon({className:'',html:'<div class="'+cls+'">'+label+'</div>',iconSize:[32,32],iconAnchor:[16,16]});
+    const timeStr = isActive ? fmt(s.calcT) : "מדולג";
+    L.marker([latOff,lngOff],{icon}).addTo(routeLayer)
+      .bindPopup('<b>'+label+'. '+s.name+'</b><br><b>'+timeStr+'</b> — '+s.sub+'<br><a href="'+gmLink(s)+'" target="_blank">📷 תמונות, ביקורות וניווט</a>',{maxWidth:280});
+  });
+  if(pts.length) lmap.fitBounds(L.latLngBounds(STOPS.map(s=>[s.lat,s.lng])).pad(0.12));
+}
 
 let gpsPos=null;
 let follow=false;
@@ -318,30 +441,33 @@ function placeMe(lat,lng){
   if(!meMarker){meMarker=L.marker([lat,lng],{icon:L.divIcon({className:'',html:'<div class="mepin"></div>',iconSize:[18,18],iconAnchor:[9,9]}),zIndexOffset:1000}).addTo(lmap).bindPopup('אתם כאן');}
   else meMarker.setLatLng([lat,lng]);
 }
+
 function render(){
   const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
   document.getElementById("pClock").textContent="השעה עכשיו "+fmt(nowMin)+" · הפלגה ב-23:59 — נשארו "+fmt(Math.max(0,23*60+59-nowMin))+" שעות";
-  const pi=plannedIndex(nowMin);
+  const active = order.filter(s=>!s.skip);
+  let pi=-1; active.forEach((s,i)=>{ if(s.calcT<=nowMin) pi=i; });
   const pPlan=document.getElementById("pPlan");
   document.querySelectorAll(".stops li").forEach(li=>li.classList.remove("active"));
-  if(nowMin<toMin(STOPS[0].t)) pPlan.textContent="לפי התוכנית: עדיין על האונייה. יורדים ב-15:50";
-  else if(pi>=STOPS.length-1) pPlan.textContent="לפי התוכנית: חזרתם לאונייה. ארוחת ערב 20:00";
-  else pPlan.textContent="לפי התוכנית עכשיו: "+(pi+1)+". "+STOPS[pi].name+" → הבא: "+STOPS[pi+1].t+" "+STOPS[pi+1].name;
+  if(nowMin<active[0].calcT) pPlan.textContent="לפי התוכנית: עדיין על האונייה. יורדים ב-15:50";
+  else if(pi>=active.length-1) pPlan.textContent="לפי התוכנית: חזרתם לאונייה. ארוחת ערב 20:00";
+  else pPlan.textContent="לפי התוכנית עכשיו: "+(pi+1)+". "+active[pi].name+" → הבא: "+fmt(active[pi+1].calcT)+" "+active[pi+1].name;
   const gps=document.getElementById("pGps"), nxt=document.getElementById("pNext");
   if(gpsPos){
     let best=-1,bd=1e9;
-    STOPS.forEach((s,i)=>{const dd=dist(gpsPos.lat,gpsPos.lng,s.lat,s.lng);if(dd<bd){bd=dd;best=i;}});
-    if(best===0 && nowMin>toMin(STOPS[6].t)) best=STOPS.length-1;
-    const here = bd<220 ? "אתם ב-"+(best+1)+". "+STOPS[best].name : "אתם בדרך, הכי קרוב ל-"+(best+1)+". "+STOPS[best].name+" ("+Math.round(bd)+" מ')";
-    const delta = nowMin - toMin(STOPS[best].t);
+    active.forEach((s,i)=>{const dd=hav(gpsPos.lat,gpsPos.lng,s.lat,s.lng);if(dd<bd){bd=dd;best=i;}});
+    // tie-break identical coordinates (port start/return) by closeness in time
+    active.forEach((s,i)=>{const dd=hav(gpsPos.lat,gpsPos.lng,s.lat,s.lng); if(Math.abs(dd-bd)<15 && Math.abs(nowMin-s.calcT)<Math.abs(nowMin-active[best].calcT)) best=i;});
+    const here = bd<220 ? "אתם ב-"+(best+1)+". "+active[best].name : "אתם בדרך, הכי קרוב ל-"+(best+1)+". "+active[best].name+" ("+Math.round(bd)+" מ')";
+    const delta = nowMin - active[best].calcT;
     let cls="ok", txt="בזמן ✔";
     if(delta>12){cls="late";txt="מאחרים בכ-"+delta+" דקות";}
     else if(delta<-12){cls="early";txt="מקדימים בכ-"+(-delta)+" דקות";}
     gps.innerHTML=here+' · <span class="'+cls+'">'+txt+'</span>';
-    nxt.textContent = best<STOPS.length-1 ? "הבא: "+STOPS[best+1].t+" "+STOPS[best+1].name+" — כ-"+Math.round(dist(gpsPos.lat,gpsPos.lng,STOPS[best+1].lat,STOPS[best+1].lng))+" מטר" : "";
-    const li=document.getElementById("stop"+best); if(li)li.classList.add("active");
+    nxt.textContent = best<active.length-1 ? "הבא: "+fmt(active[best+1].calcT)+" "+active[best+1].name+" — כ-"+Math.round(hav(gpsPos.lat,gpsPos.lng,active[best+1].lat,active[best+1].lng))+" מטר" : "";
+    const li=document.getElementById("stop_"+STOPS.indexOf(active[best])); if(li)li.classList.add("active");
     placeMe(gpsPos.lat,gpsPos.lng);
-  }else if(pi>=0&&pi<STOPS.length){const li=document.getElementById("stop"+pi);if(li)li.classList.add("active");}
+  }else if(pi>=0&&pi<active.length){const li=document.getElementById("stop_"+STOPS.indexOf(active[pi]));if(li)li.classList.add("active");}
 }
 document.getElementById("gpsBtn").addEventListener("click",()=>{
   if(!navigator.geolocation){document.getElementById("pGps").textContent="אין GPS בדפדפן הזה";return;}
@@ -357,7 +483,7 @@ document.getElementById("followBtn").addEventListener("click",()=>{
   if(follow){ if(!gpsPos) document.getElementById("gpsBtn").click(); else placeMe(gpsPos.lat,gpsPos.lng); }
 });
 if(lmap) lmap.on("dragstart",()=>{ if(follow){follow=false;const b=document.getElementById("followBtn");b.classList.remove("on");b.textContent="🎯 אני";} });
-// ---- map lock: double-tap to move, scroll page to lock again ----
+// ---- map lock: button toggles pan/zoom ----
 let mapUnlocked=false;
 function setMapLock(unlocked){
   if(!lmap)return; mapUnlocked=unlocked;
@@ -366,15 +492,17 @@ function setMapLock(unlocked){
   else{lmap.dragging.disable();lmap.touchZoom.disable();b.textContent="🔒 נעול";b.classList.remove("on");}
 }
 document.getElementById("lockBtn").addEventListener("click",()=>setMapLock(!mapUnlocked));
-// ---- days: open today's (else Rhodes); refresh map when Rhodes opens ----
+// ---- days: open today's only; refresh map when a day opens ----
 (function(){
   const d=new Date(); const today=d.getDate()+"/"+(d.getMonth()+1);
   const days=[...document.querySelectorAll("details.dayd")];
   let opened=days.find(x=>x.dataset.date===today); // בברירת מחדל הכל סגור; נפתח רק היום הנוכחי בתאריכי ההפלגה
   if(opened) opened.open=true;
-  days.forEach(x=>x.addEventListener("toggle",()=>{ if(x.open && lmap){ setTimeout(()=>{lmap.invalidateSize(); lmap.fitBounds(L.latLngBounds(STOPS.map(s=>[s.lat,s.lng])).pad(0.12));},50); } }));
+  days.forEach(x=>x.addEventListener("toggle",()=>{ if(x.open && lmap){ setTimeout(()=>{lmap.invalidateSize(); updateMap();},50); } }));
   if(opened && opened.open && lmap) setTimeout(()=>lmap.invalidateSize(),100);
 })();
+renderStopsList();
+updateMap();
 render(); setInterval(render,30000);
 </script>
 </body>
