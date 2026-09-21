@@ -22,6 +22,12 @@
   .day{border-bottom:1px solid #f0ece3;padding:14px 16px;}
   .day:last-child{border-bottom:none;}
   .day h3{font-size:1rem;color:var(--sea-deep);display:flex;align-items:baseline;gap:8px;}
+  .dayd summary{list-style:none;cursor:pointer;display:flex;align-items:center;}
+  .dayd summary::-webkit-details-marker{display:none;}
+  .dayd summary h3{flex:1;margin:0;}
+  .dayd summary::after{content:"▾";color:#9db4c0;font-size:1.3rem;margin-inline-start:8px;transition:transform .2s;}
+  .dayd[open] summary::after{transform:rotate(180deg);}
+  .dayd[open] summary{margin-bottom:6px;padding-bottom:6px;border-bottom:1px dashed #e3ddd0;}
   .day h3 .d{background:var(--sea);color:#fff;border-radius:8px;font-size:.8rem;padding:3px 10px;font-weight:600;flex:0 0 auto;}
   .day ul{list-style:none;margin-top:8px;}
   .day li{font-size:.94rem;line-height:1.5;padding:4px 0;display:flex;gap:10px;align-items:flex-start;}
@@ -56,13 +62,20 @@
   .stops details summary::after{content:"▾";margin-inline-start:auto;color:#9db4c0;font-size:1rem;transition:transform .2s;}
   .stops details[open] summary::after{transform:rotate(180deg);}
   .stops .det{margin-top:6px;font-size:.88rem;line-height:1.55;color:#3d4f5a;}
-  .stops .game{margin-top:6px;background:#fdf7e8;border-right:3px solid #b98a2e;padding:6px 10px;border-radius:6px;color:#5b4a35;}
+  .stops .game{margin-top:6px;background:#fff;border:1px solid #e3c98a;border-right:4px solid #b98a2e;padding:7px 10px;border-radius:6px;color:#5b4a35;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .stops li.active .game{background:#eef6f9;border-color:#9db4c0;border-right-color:#0e4f6e;color:#1c2b33;}
   .stops li.active .n{box-shadow:0 0 0 4px #ffe08a;}
   /* map */
   .map{background:#e9f2f6;border-radius:12px;margin-top:12px;padding:6px;}
   #lmap{height:460px;border-radius:10px;}
   .mapwrap{position:relative;}
-  .followbtn{position:absolute;top:12px;right:12px;z-index:1000;font-family:inherit;font-size:.9rem;font-weight:700;border:0;border-radius:99px;padding:10px 16px;background:#fff;color:#0e4f6e;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;}
+  .lockbtn.on{background:#2e7d4f;color:#fff;}
+  .gwrap{position:relative;}
+  .gshield{position:absolute;inset:0;z-index:5;background:transparent;}
+  .gshield.off{pointer-events:none;}
+  .gshield .lockhint{pointer-events:none;}
+  .followbtn{position:absolute;top:10px;right:10px;z-index:1000;font-family:inherit;font-size:.8rem;font-weight:700;border:0;border-radius:99px;padding:7px 11px;background:#fff;color:#0e4f6e;box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer;white-space:nowrap;}
+  .followbtn.lockbtn{right:86px;}
   .followbtn.on{background:#c9502e;color:#fff;}
   .gmap{margin-top:12px;border-radius:12px;overflow:hidden;background:#e9f2f6;padding:6px;}
   .gmap iframe{width:100%;height:440px;border:0;border-radius:10px;display:block;}
@@ -101,7 +114,7 @@
 <section class="card">
 
   <div class="day">
-    <h3><span class="d">יום א'</span> 27/9 — יציאה מחיפה</h3>
+    <details class="dayd" data-date="27/9"><summary><h3><span class="d">יום א'</span> 27/9 — יציאה מחיפה</h3></summary>
     <ul>
       <li class="note">🚆 כדאי להגיע ברכבת לתחנת "חיפה מרכז השמונה" — משם הליכה קצרה לנמל, בערך 100 מטר</li>
       <li><span class="t">11:00</span> שעת העלייה לאונייה לפי הכרטיס — כדאי להגיע לנמל לפני העומס, בסביבות 10:30. איחור של יותר מ-40 דקות עלול למנוע עלייה</li>
@@ -132,11 +145,12 @@
       <li class="todo">תוכניות ליום הראשון — יעודכן</li>
     </ul>
     <div class="highlight">הפלגה נעימה! 🌊</div>
+    </details>
   </div>
 
   <!-- ===================== RHODES ===================== -->
   <div class="day" id="rhodes">
-    <h3><span class="d">יום ב'</span> 28/9 — רודוס 🇬🇷</h3>
+    <details class="dayd" data-date="28/9"><summary><h3><span class="d">יום ב'</span> 28/9 — רודוס 🇬🇷</h3></summary>
     <ul>
       <li class="todo">סדר יום מלא באונייה — יעודכן</li>
       <li><span class="t">15:30</span> עגינה ברודוס</li>
@@ -161,7 +175,7 @@
     <!-- osm map with GPS -->
     <div class="map">
       <div class="maplabel">🗺️ המסלול — לחיצה על מספר פותחת שעה, פרטים ותמונות · הנקודה האדומה = אתם</div>
-      <div class="mapwrap"><div id="lmap"></div><button id="followBtn" class="followbtn" title="מרכז את המפה עליי">📍 מרכז אליי</button></div>
+      <div class="mapwrap"><div id="lmap"></div><button id="followBtn" class="followbtn" title="מרכז את המפה עליי">🎯 אני</button><button id="lockBtn" class="followbtn lockbtn">🔒 נעול</button></div>
       <div class="legend"><span class="l1">תחנה</span><span class="l2">חנויות לילדים</span><span class="l3">אופציונלי</span><span class="l4">אתם (GPS)</span> · אפשר להגדיל ולהזיז</div>
     </div>
     <!-- google map -->
@@ -177,11 +191,12 @@
 
     <ul class="stops" id="stops"></ul>
     <div class="highlight">🌙 בערב: הילדים סיימו. מי מהמבוגרים שרוצה — חוזר לעיר העתיקה המוארת (10 דקות מהנמל, דרך שער הים) עד ~23:00. לוודא באונייה את שעת "כולם על הסיפון".</div>
+    </details>
   </div>
 
   <!-- ===================== CRETE ===================== -->
   <div class="day">
-    <h3><span class="d">יום ג'</span> 29/9 — כרתים 🇬🇷</h3>
+    <details class="dayd" data-date="29/9"><summary><h3><span class="d">יום ג'</span> 29/9 — כרתים 🇬🇷</h3></summary>
     <ul>
       <li class="todo">תוכנית בוקר באונייה — יעודכן</li>
       <li><span class="t">10:30</span> עגינה בכרתים — אגיוס ניקולאוס</li>
@@ -207,22 +222,25 @@
     </div>
 
     <div class="tip">🚕 חשוב: אין Uber באגיוס ניקולאוס — משתמשים במוניות מקומיות (יש תחנת מוניות ליד המרכז). ובגלל התינוקות: ביוון חובה כיסא בטיחות לילדים ברכב — אם צריך מונית מחוץ לעיר, לתאם מראש רכב עם כיסא מתאים, לא לעצור מונית ברחוב.</div>
+    </details>
   </div>
 
   <div class="day">
-    <h3><span class="d">יום ד'</span> 30/9 — יום שייט 🚢</h3>
+    <details class="dayd" data-date="30/9"><summary><h3><span class="d">יום ד'</span> 30/9 — יום שייט 🚢</h3></summary>
     <ul>
       <li class="note">יום ים מלא: בריכה, אוכל, פעילויות ומנוחה</li>
       <li class="todo">תוכנית האונייה ליום זה — יעודכן</li>
     </ul>
+    </details>
   </div>
 
   <div class="day">
-    <h3><span class="d">יום ה'</span> 1/10 — חזרה הביתה 🇮🇱</h3>
+    <details class="dayd" data-date="1/10"><summary><h3><span class="d">יום ה'</span> 1/10 — חזרה הביתה 🇮🇱</h3></summary>
     <ul>
       <li class="note">פינוי חדרים</li>
       <li><span class="t">8:00</span> הגעה לנמל חיפה</li>
     </ul>
+    </details>
   </div>
 </section>
 
@@ -272,7 +290,7 @@ STOPS.forEach((s,i)=>{
 // ---------- real map (Leaflet + OpenStreetMap) ----------
 let lmap=null, meMarker=null;
 try{
-  lmap=L.map('lmap',{scrollWheelZoom:false});
+  lmap=L.map('lmap',{scrollWheelZoom:false,dragging:false,touchZoom:false,doubleClickZoom:false,tap:false});
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(lmap);
   const pts=STOPS.map(s=>[s.lat,s.lng]);
   L.polyline(pts,{color:'#0e4f6e',weight:4,opacity:.75,dashArray:'8 6'}).addTo(lmap);
@@ -335,10 +353,28 @@ document.getElementById("gpsBtn").addEventListener("click",()=>{
 document.getElementById("followBtn").addEventListener("click",()=>{
   follow=!follow;
   const b=document.getElementById("followBtn");
-  b.classList.toggle("on",follow); b.textContent=follow?"📍 עוקב אחריכם":"📍 מרכז אליי";
+  b.classList.toggle("on",follow); b.textContent=follow?"🎯 עוקב":"🎯 אני";
   if(follow){ if(!gpsPos) document.getElementById("gpsBtn").click(); else placeMe(gpsPos.lat,gpsPos.lng); }
 });
-if(lmap) lmap.on("dragstart",()=>{ if(follow){follow=false;const b=document.getElementById("followBtn");b.classList.remove("on");b.textContent="📍 מרכז אליי";} });
+if(lmap) lmap.on("dragstart",()=>{ if(follow){follow=false;const b=document.getElementById("followBtn");b.classList.remove("on");b.textContent="🎯 אני";} });
+// ---- map lock: double-tap to move, scroll page to lock again ----
+let mapUnlocked=false;
+function setMapLock(unlocked){
+  if(!lmap)return; mapUnlocked=unlocked;
+  const b=document.getElementById("lockBtn");
+  if(unlocked){lmap.dragging.enable();lmap.touchZoom.enable();b.textContent="🔓 פתוח";b.classList.add("on");}
+  else{lmap.dragging.disable();lmap.touchZoom.disable();b.textContent="🔒 נעול";b.classList.remove("on");}
+}
+document.getElementById("lockBtn").addEventListener("click",()=>setMapLock(!mapUnlocked));
+// ---- days: open today's (else Rhodes); refresh map when Rhodes opens ----
+(function(){
+  const d=new Date(); const today=d.getDate()+"/"+(d.getMonth()+1);
+  const days=[...document.querySelectorAll("details.dayd")];
+  let opened=days.find(x=>x.dataset.date===today); // בברירת מחדל הכל סגור; נפתח רק היום הנוכחי בתאריכי ההפלגה
+  if(opened) opened.open=true;
+  days.forEach(x=>x.addEventListener("toggle",()=>{ if(x.open && lmap){ setTimeout(()=>{lmap.invalidateSize(); lmap.fitBounds(L.latLngBounds(STOPS.map(s=>[s.lat,s.lng])).pad(0.12));},50); } }));
+  if(opened && opened.open && lmap) setTimeout(()=>lmap.invalidateSize(),100);
+})();
 render(); setInterval(render,30000);
 </script>
 </body>
