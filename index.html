@@ -51,10 +51,19 @@
   .stops .sub{display:block;font-size:.82rem;color:#5c7482;margin-top:2px;}
   .stops a{color:var(--sea);font-size:.8rem;text-decoration:none;border:1px solid #cfe3ec;border-radius:99px;padding:2px 9px;display:inline-block;margin-top:5px;background:#fff;}
   .stops li.active{background:#fff9e6;margin:0 -16px;padding:9px 16px;border-radius:8px;}
+  .stops details summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;font-weight:600;}
+  .stops details summary::-webkit-details-marker{display:none;}
+  .stops details summary::after{content:"▾";margin-inline-start:auto;color:#9db4c0;font-size:1rem;transition:transform .2s;}
+  .stops details[open] summary::after{transform:rotate(180deg);}
+  .stops .det{margin-top:6px;font-size:.88rem;line-height:1.55;color:#3d4f5a;}
+  .stops .game{margin-top:6px;background:#fdf7e8;border-right:3px solid #b98a2e;padding:6px 10px;border-radius:6px;color:#5b4a35;}
   .stops li.active .n{box-shadow:0 0 0 4px #ffe08a;}
   /* map */
   .map{background:#e9f2f6;border-radius:12px;margin-top:12px;padding:6px;}
   #lmap{height:460px;border-radius:10px;}
+  .mapwrap{position:relative;}
+  .followbtn{position:absolute;top:12px;right:12px;z-index:1000;font-family:inherit;font-size:.9rem;font-weight:700;border:0;border-radius:99px;padding:10px 16px;background:#fff;color:#0e4f6e;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;}
+  .followbtn.on{background:#c9502e;color:#fff;}
   .gmap{margin-top:12px;border-radius:12px;overflow:hidden;background:#e9f2f6;padding:6px;}
   .gmap iframe{width:100%;height:440px;border:0;border-radius:10px;display:block;}
   .maplabel{font-size:.85rem;color:#4d6675;padding:6px 8px 4px;font-weight:600;}
@@ -137,7 +146,7 @@
 
     <div class="plan">
       <h4>⭐ התוכנית: הכל ברגל — טיילת, קולנוע 9D, חנויות לילדים, עיר עתיקה</h4>
-      <div class="why">לולאה של כ-3 ק"מ, בלי נסיעות. יוצאים מהנמל צפונה לאורך המים, וחוזרים דרומה דרך העיר העתיקה ישר לספינה. רק הקולנוע בתשלום (13 אירו למבוגר, 9 לילד עד 12 — לא צריך להזמין, הקרנה כל 30 דקות, כרטיסים באתר תקפים לכל היום).</div>
+      <div class="why">לולאה של כ-3 ק"מ, בלי נסיעות. יוצאים מהנמל צפונה לאורך המים, וחוזרים דרומה דרך העיר העתיקה ישר לספינה. רק הקולנוע בתשלום (13 אירו למבוגר, 9 לילד עד 12 — לא צריך להזמין, הקרנה כל 30 דקות, כרטיסים באתר תקפים לכל היום). 💶 סה"כ ליום: ~167 אירו לקולנוע + תקציב קניות לילדים. כל שאר התחנות חינם.</div>
     </div>
 
     <!-- progress by time -->
@@ -149,27 +158,24 @@
       <div class="line" id="pNext"></div>
     </div>
 
+    <!-- osm map with GPS -->
+    <div class="map">
+      <div class="maplabel">🗺️ המסלול — לחיצה על מספר פותחת שעה, פרטים ותמונות · הנקודה האדומה = אתם</div>
+      <div class="mapwrap"><div id="lmap"></div><button id="followBtn" class="followbtn" title="מרכז את המפה עליי">📍 מרכז אליי</button></div>
+      <div class="legend"><span class="l1">תחנה</span><span class="l2">חנויות לילדים</span><span class="l3">אופציונלי</span><span class="l4">אתם (GPS)</span> · אפשר להגדיל ולהזיז</div>
+    </div>
     <!-- google map -->
     <div class="gmap">
-      <div class="maplabel">🗺️ מפת גוגל — המסלול ברגל דרך כל התחנות</div>
+      <div class="maplabel">🗺️ אותו מסלול בגוגל מפות (בלי מספרים)</div>
       <iframe id="gframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 
-    <!-- osm map with GPS -->
-    <div class="map">
-      <div class="maplabel">📍 מפה עם המיקום שלכם (אחרי הפעלת GPS)</div>
-      <div id="lmap"></div>
-      <div class="legend"><span class="l1">תחנה</span><span class="l2">חנויות לילדים</span><span class="l3">אופציונלי</span><span class="l4">אתם (GPS)</span> · אפשר להגדיל ולהזיז את המפה, לחיצה על מספר = פרטים</div>
-    </div>
     <div class="mapbtns">
       <a id="gm1" target="_blank">🗺️ ניווט: נמל → קולנוע</a>
       <a id="gm2" target="_blank">🗺️ ניווט: חנויות → נמל</a>
     </div>
 
     <ul class="stops" id="stops"></ul>
-
-    <div class="tip">🚕 מוניות: אין ברודוס Uber או Bolt — מוניות מונה מתחנת המוניות שליד הנמל, או אפליקציית Aegean Taxi. בתוכנית הזאת לא צריך רכב בכלל.</div>
-    <div class="avoid"><b>❌ מה לא עושים:</b> לא נוסעים ללינדוס (שעה נסיעה + מדרגות). לא נכנסים לארמון (20 אירו למבוגר). לא לוקחים את הרכבת התיירותית (13 אירו לאדם, לא שווה). לא מבזבזים על האקווריום (קטן, רחוק מהנמל).</div>
     <div class="highlight">🌙 בערב: הילדים סיימו. מי מהמבוגרים שרוצה — חוזר לעיר העתיקה המוארת (10 דקות מהנמל, דרך שער הים) עד ~23:00. לוודא באונייה את שעת "כולם על הסיפון".</div>
   </div>
 
@@ -226,20 +232,20 @@
 <script>
 // ---------- Rhodes stops (order = route) ----------
 const STOPS = [
- {t:"15:50", name:"נמל רודוס — ירידה מהאונייה", sub:"עגינה 15:30, ירידה בפועל ~15:50. יוצאים והולכים צפונה לאורך המים", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"},
- {t:"16:05", name:"טחנות הרוח של מנדראקי", sub:"עצירה לתמונות על שובר הגלים", lat:36.449136, lng:28.227995, pid:"ChIJvWVAledhlRQR_2jmgEadHb8", q:"Windmills of Rhodes"},
- {t:"16:15", name:"מצודת סנט ניקולס", sub:"בקצה שובר הגלים — אופציונלי, לדלג אם מתעכבים", lat:36.451266, lng:28.228052, pid:"ChIJhWNka-dhlRQRKC6cw9jimaY", q:"Saint Nicholas Fortress Rhodes", opt:true},
- {t:"16:30", name:"פסלי האיילים", sub:"כניסת נמל מנדראקי — איפה שעמד הקולוסוס לפי האגדה. 5 דקות מכאן לקולנוע", lat:36.451157, lng:28.226573, pid:"ChIJsSgjHedhlRQRWJnpA706G6g", q:"Doe Statue Rhodes"},
- {t:"16:45", name:"Throne of Helios — קולנוע 9D", sub:"מגיעים 15 דקות לפני. הקרנה 17:00–17:30 (או 16:30 אם הגעתם מוקדם). בעברית. 13 אירו מבוגר / 9 ילד. ליד סטארבקס", lat:36.449789, lng:28.224379, pid:"ChIJT_vVEuZhlRQROIxoeXI22uo", q:"Throne of Helios Rhodes"},
- {t:"17:35", name:"One Euro Shop", sub:"צמוד לקולנוע — מזכרות ב-1 אירו, לקטנים עם תקציב", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true},
- {t:"17:45", name:"The Cartoon Store", sub:"דיסני, פוקימון, מארוול, נינטנדו — 3 דקות מהקולנוע. יקר יחסית", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true},
- {t:"18:00", name:"Karabáki", sub:"קלפי פוקימון, ציוד יצירה, מנגה — לגדולים. מחירים טובים", lat:36.448853, lng:28.220362, pid:"ChIJDSBAAo5hlRQRZcr_USo1ttM", q:"Karabaki Rhodes", shop:true},
- {t:"18:25", name:"שער ד'אמבואז — כניסה לעיר העתיקה", sub:"גשר מעל החפיר ושני מגדלים. חינם", lat:36.445999, lng:28.222468, pid:"ChIJ0QKQcwBhlRQR99ZuM26m6YE", q:"Gate d'Amboise Rhodes"},
- {t:"18:30", name:"רחוב האבירים", sub:"600 מטר של ימי הביניים. משחק: מי מוצא הכי הרבה מגני אבירים על הקירות", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes"},
- {t:"18:50", name:"Geppetto's House", sub:"צעצועי עץ בעבודת יד, רחוב Ippodamou 18 — סטייה של 3 דקות", lat:36.443306, lng:28.224101, pid:"ChIJ4YrA-uthlRQRy-es4fIRvjA", q:"Geppetto's House Rhodes", shop:true},
- {t:"19:05", name:"כיכר היפוקרטס ורחוב סוקרטוס", sub:"רחוב הקניות — מעבר יפה, לא חובה לעצור", lat:36.443649, lng:28.228290, pid:"ChIJiRh86elhlRQRt_HtFMgzFDA", q:"Hippocrates Square Rhodes"},
- {t:"19:25", name:"שער הים — יציאה לנמל", sub:"השער שנראה הכי כמו טירה. מכאן 15 דקות לאונייה", lat:36.444082, lng:28.228281, pid:"ChIJVTmNDcJhlRQRVSw_DJwl2UM", q:"Sea Gate Rhodes"},
- {t:"19:45", name:"נמל רודוס — חזרה לאונייה", sub:"ארוחת ערב 20:00. הפלגה 23:59", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"}
+ {t:"15:50", name:"נמל רודוס — ירידה מהאונייה", sub:"יורדים ופונים צפונה (שמאלה) לטיילת שלאורך המים. בצד שמאל חומות העיר העתיקה, בצד ימין הים. 💶 חינם", game:"מי מזהה ראשון מרחוק את שלוש טחנות הרוח על שובר הגלים?", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"},
+ {t:"16:05", name:"טחנות הרוח של מנדראקי", sub:"שלוש טחנות רוח מאבן מימי הביניים על שובר הגלים — פעם טחנו בהן תבואה שהגיעה בספינות. נקודת הצילום הכי יפה של הנמל. 💶 חינם", game:"לספור את הטחנות. חידה: למה בנו אותן דווקא על שובר הגלים? (הספינות פרקו תבואה ישר לטחנה)", lat:36.449136, lng:28.227995, pid:"ChIJvWVAledhlRQR_2jmgEadHb8", q:"Windmills of Rhodes"},
+ {t:"16:15", name:"מצודת סנט ניקולס", sub:"מצודה מהמאה ה-15 בקצה שובר הגלים, היום מגדלור. לא נכנסים פנימה — הולכים עד אליה ורואים את הים ואת האונייה שלנו מהצד. אופציונלי, לדלג אם מתעכבים. 💶 חינם", game:"למצוא את האונייה שלנו מהמצודה ולזהות באיזו קומה החדר שלנו.", lat:36.451266, lng:28.228052, pid:"ChIJhWNka-dhlRQRKC6cw9jimaY", q:"Saint Nicholas Fortress Rhodes", opt:true},
+ {t:"16:30", name:"פסלי האיילים", sub:"אייל ואיילה מברונזה על שני עמודים בכניסה לנמל — הסמל של רודוס. לפי האגדה בדיוק כאן עמד הקולוסוס, פסל ענק מאחד משבעת פלאי העולם. 5 דקות מכאן לקולנוע. 💶 חינם", game:"מי האייל ומי האיילה? (לאייל יש קרניים). ותמונת \"קולוסוס\": עומדים ברגליים פשוקות מול הכניסה לנמל.", lat:36.451157, lng:28.226573, pid:"ChIJsSgjHedhlRQRWJnpA706G6g", q:"Doe Statue Rhodes"},
+ {t:"16:45", name:"Throne of Helios — קולנוע 9D", sub:"כיסאות זזים, רוח, גשם, ריחות. סרט אחד על ההיסטוריה של רודוס (20 דק') ומרוץ מרכבות נגד אלי האולימפוס (6 דק'). בעברית. הקרנה כל 30 דקות, מגיעים 15 דקות לפני. ליד סטארבקס. 💶 13 אירו מבוגר, 9 ילד עד 12 — כ-167 אירו לכולנו", game:"אחרי הסרט — כל ילד אומר דבר אחד שלמד על רודוס.", lat:36.449789, lng:28.224379, pid:"ChIJT_vVEuZhlRQROIxoeXI22uo", q:"Throne of Helios Rhodes"},
+ {t:"17:35", name:"One Euro Shop", sub:"חנות מזכרות קטנה צמודה לקולנוע: מגנטים, מחזיקי מפתחות, צעצועים קטנים. הרבה דברים ב-1 אירו, השאר עד כ-6. מתאים לקטנים עם תקציב. 💶 לפי הקנייה", game:"תקציב: כל ילד מקבל סכום קבוע ומחליט לבד מה קונים.", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true},
+ {t:"17:45", name:"The Cartoon Store", sub:"מרצ'נדייז: דיסני, פוקימון, מארוול, נינטנדו, דמויות אקשן. 3 דקות מהקולנוע. שימו לב — יקר יחסית. 💶 לפי הקנייה", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true},
+ {t:"18:00", name:"Karabáki", sub:"חנות ספרים וכלי כתיבה עם ציוד יצירה, קלפי פוקימון ויו-גי-הו, מנגה. מתאימה לגדולים (9–11). מחירים טובים. 💶 לפי הקנייה", lat:36.448853, lng:28.220362, pid:"ChIJDSBAAo5hlRQRZcr_USo1ttM", q:"Karabaki Rhodes", shop:true},
+ {t:"18:25", name:"שער ד'אמבואז — כניסה לעיר העתיקה", sub:"השער הראשי: גשר מעל חפיר יבש ושני מגדלים עגולים משנת 1512. עוברים דרך כמה שערים ברצף — מרגישים שנכנסים לטירה. 💶 חינם", game:"מכאן מתחילה \"ספירת השערים\": כמה שערים וקשתות עוברים עד שער הים? כל ילד סופר, בודקים בסוף. ומשימת \"מרגל ימי הביניים\": למצוא דלת עץ ישנה, סמל על קיר, חלון עם סורג, מדרגות אבן.", lat:36.445999, lng:28.222468, pid:"ChIJ0QKQcwBhlRQR99ZuM26m6YE", q:"Gate d'Amboise Rhodes"},
+ {t:"18:30", name:"רחוב האבירים", sub:"רחוב מרוצף מהמאה ה-14, משני צדדיו בתי האבירים של כל מדינה (צרפת, ספרד, איטליה…) עם סמלי מגן חרוטים על הקירות. משחק לילדים: מי מוצא הכי הרבה מגנים. הארמון בקצה — רק מבחוץ. 💶 חינם", game:"ציד מגני אבירים: מי מוצא הכי הרבה סמלי מגן חרוטים על הקירות. בונוס: מגן עם אריה, עם פרחי שושן (צרפת), עם צלב.", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes"},
+ {t:"18:50", name:"Geppetto's House", sub:"חנות צעצועי עץ בעבודת יד — בובות, משחקים, מכוניות עץ. סטייה של 3 דקות מהמסלול (Ippodamou 18). 💶 לפי הקנייה", lat:36.443306, lng:28.224101, pid:"ChIJ4YrA-uthlRQRy-es4fIRvjA", q:"Geppetto's House Rhodes", shop:true},
+ {t:"19:05", name:"כיכר היפוקרטס ורחוב סוקרטוס", sub:"כיכר עם מזרקה ומדרגות עתיקות, ורחוב הקניות הראשי של העיר העתיקה: מזכרות, ספוגי ים, תכשיטים, בגדים. מעבר יפה, לא חובה לעצור. 💶 חינם להסתובב; מזכרות 3–10 אירו", game:"מי רואה ראשון את מגדל השעון מעל הבתים?", lat:36.443649, lng:28.228290, pid:"ChIJiRh86elhlRQRt_HtFMgzFDA", q:"Hippocrates Square Rhodes"},
+ {t:"19:25", name:"שער הים — יציאה לנמל", sub:"השער הכי מרשים של החומות, עם שני מגדלים עגולים מול הנמל — כאן מצטלמים בפעם האחרונה. מכאן 15 דקות הליכה לאונייה. 💶 חינם", game:"סוף ספירת השערים — מי צדק? ותמונה קבוצתית מול השער.", lat:36.444082, lng:28.228281, pid:"ChIJVTmNDcJhlRQRVSw_DJwl2UM", q:"Sea Gate Rhodes"},
+ {t:"19:45", name:"נמל רודוס — חזרה לאונייה", sub:"עולים עם המנו קארד. ארוחת ערב 20:00. הפלגה 23:59 — מבוגרים שרוצים יוצאים שוב לעיר העתיקה המוארת עד ~23:00. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port"}
 ];
 
 const gmLink = s => "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.q)+"&query_place_id="+s.pid;
@@ -257,8 +263,9 @@ const ul = document.getElementById("stops");
 STOPS.forEach((s,i)=>{
   const li = document.createElement("li"); li.id="stop"+i;
   li.innerHTML = '<div class="n'+(s.opt?' opt':'')+(s.shop?' shop':'')+'">'+(i+1)+'</div>'+
-    '<div class="body"><span class="tt">'+s.t+'</span>'+s.name+'<span class="sub">'+s.sub+'</span>'+
-    '<a href="'+gmLink(s)+'" target="_blank">📷 תמונות וניווט בגוגל מפות</a></div>';
+    '<div class="body"><details><summary><span class="tt">'+s.t+'</span>'+s.name+'</summary>'+
+    '<div class="det"><div class="what">'+s.sub+'</div>'+(s.game?'<div class="game">🎲 '+s.game+'</div>':'')+
+    '<a href="'+gmLink(s)+'" target="_blank">📷 תמונות וניווט בגוגל מפות</a></div></details></div>';
   ul.appendChild(li);
 });
 
@@ -271,8 +278,9 @@ try{
   L.polyline(pts,{color:'#0e4f6e',weight:4,opacity:.75,dashArray:'8 6'}).addTo(lmap);
   STOPS.forEach((s,i)=>{
     const cls='numpin'+(s.shop?' shop':'')+(s.opt?' opt':'');
+    const dLng = (i===0? -0.00025 : (i===STOPS.length-1? 0.00025 : 0)); // 1 ו-14 זה לצד זה
     const icon=L.divIcon({className:'',html:'<div class="'+cls+'">'+(i+1)+'</div>',iconSize:[32,32],iconAnchor:[16,16]});
-    L.marker([s.lat,s.lng],{icon}).addTo(lmap)
+    L.marker([s.lat,s.lng+dLng],{icon}).addTo(lmap)
       .bindPopup('<b>'+(i+1)+'. '+s.name+'</b><br><b>'+s.t+'</b> — '+s.sub+'<br><a href="'+gmLink(s)+'" target="_blank">📷 תמונות, ביקורות וניווט</a>',{maxWidth:280});
   });
   lmap.fitBounds(L.latLngBounds(pts).pad(0.12));
@@ -285,8 +293,10 @@ function plannedIndex(nowMin){let idx=-1;STOPS.forEach((s,i)=>{if(toMin(s.t)<=no
 function dist(aLat,aLng,bLat,bLng){const R=6371000,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
 
 let gpsPos=null;
+let follow=false;
 function placeMe(lat,lng){
   if(!lmap)return;
+  if(follow) lmap.setView([lat,lng], Math.max(lmap.getZoom(),17), {animate:true});
   if(!meMarker){meMarker=L.marker([lat,lng],{icon:L.divIcon({className:'',html:'<div class="mepin"></div>',iconSize:[18,18],iconAnchor:[9,9]}),zIndexOffset:1000}).addTo(lmap).bindPopup('אתם כאן');}
   else meMarker.setLatLng([lat,lng]);
 }
@@ -322,6 +332,13 @@ document.getElementById("gpsBtn").addEventListener("click",()=>{
     e=>{document.getElementById("pGps").innerHTML='<span class="late">לא התקבל מיקום. לאשר הרשאת מיקום לדפדפן (סמל המנעול בשורת הכתובת → מיקום → אפשר) ולנסות שוב.</span>';document.getElementById("gpsBtn").textContent="נסה שוב";},
     {enableHighAccuracy:true,maximumAge:10000,timeout:20000});
 });
+document.getElementById("followBtn").addEventListener("click",()=>{
+  follow=!follow;
+  const b=document.getElementById("followBtn");
+  b.classList.toggle("on",follow); b.textContent=follow?"📍 עוקב אחריכם":"📍 מרכז אליי";
+  if(follow){ if(!gpsPos) document.getElementById("gpsBtn").click(); else placeMe(gpsPos.lat,gpsPos.lng); }
+});
+if(lmap) lmap.on("dragstart",()=>{ if(follow){follow=false;const b=document.getElementById("followBtn");b.classList.remove("on");b.textContent="📍 מרכז אליי";} });
 render(); setInterval(render,30000);
 </script>
 </body>
