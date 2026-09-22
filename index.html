@@ -268,16 +268,16 @@
 // ---------- Rhodes stops (order = route) ----------
 const STOPS = [
  {t:"15:50", name:"נמל רודוס — ירידה מהאונייה", sub:"יורדים ופונים צפונה (שמאלה) לטיילת שלאורך המים. בצד שמאל חומות העיר העתיקה, בצד ימין הים. 💶 חינם", lat:36.446781, lng:28.232555, pid:"ChIJB-qs1txhlRQRkKi1oYoNGgE", q:"Rhodes Port", dwell:8, locked:true},
+ {t:"18:30", name:"רחוב האבירים", sub:"רחוב מרוצף מהמאה ה-14, בתי האבירים של כל מדינה עם סמלי מגן חרוטים על הקירות. 💶 חינם", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes", game:"ציד מגני אבירים: מי מוצא הכי הרבה. בונוס: מגן עם אריה, פרחי שושן (צרפת), צלב", dwell:15},
  {t:"16:05", name:"טחנות הרוח של מנדראקי", sub:"שלוש טחנות אבן מימי הביניים על שובר הגלים — פעם טחנו בהן תבואה שהגיעה בספינות. נקודת הצילום הכי יפה של הנמל. 💶 חינם", lat:36.449136, lng:28.227995, pid:"ChIJvWVAledhlRQR_2jmgEadHb8", q:"Windmills of Rhodes", game:"מי מזהה ראשון מרחוק את שלוש הטחנות?", dwell:5},
  {t:"16:15", name:"מצודת סנט ניקולס", sub:"קצה שובר הגלים — מבוי סתום, חוזרים באותו נתיב. מצודה מהמאה ה-15, היום מגדלור. רואים את האונייה שלנו מהצד. 💶 חינם", lat:36.451266, lng:28.228052, pid:"ChIJhWNka-dhlRQRKC6cw9jimaY", q:"Saint Nicholas Fortress Rhodes", opt:true, game:"למצוא את האונייה שלנו ולזהות את קומת החדר", dwell:11},
  {t:"16:30", name:"פסלי האיילים", sub:"אייל ואיילה מברונזה — סמל רודוס. לפי האגדה כאן עמד הקולוסוס, מפלאי העולם. ⚠️ מכאן חוזרים על אותו כביש ועוקפים את בסיס המרינה — אין מעבר ישיר לקולנוע. 💶 חינם", lat:36.451157, lng:28.226573, pid:"ChIJsSgjHedhlRQRWJnpA706G6g", q:"Doe Statue Rhodes", game:"מי האייל ומי האיילה? (לאייל יש קרניים) + תמונת \"קולוסוס\": רגליים פשוקות מול הכניסה לנמל", dwell:8},
  {t:"16:45", name:"Throne of Helios — קולנוע 9D", sub:"כיסאות זזים, רוח, גשם, ריחות. סרט על ההיסטוריה של רודוס ומרוץ מרכבות. בעברית. הקרנה כל 30 דקות, מגיעים 15 דקות לפני. ליד סטארבקס. 💶 13 אירו מבוגר, 9 ילד עד 12 — כ-167 אירו לכולנו", lat:36.449789, lng:28.224379, pid:"ChIJT_vVEuZhlRQROIxoeXI22uo", q:"Throne of Helios Rhodes", game:"אחרי הסרט — כל ילד אומר דבר אחד שלמד על רודוס", dwell:50},
- {t:"", name:"האקווריום של רודוס", sub:"בניין ארט-דקו משנות ה-30, בנוי כמו מערה תת-ימית, 40 בריכות עם דגים ים-תיכוניים, תמנונים וצבי ים. קטן — 20-30 דקות מספיקות. רחוק בקצה הצפוני — ברוב הסיכויים ניקח הסעה/מונית קצרה במקום ללכת ברגל (הליכה מוסיפה כמעט שעה להלוך-חזור). 💶 6.5 אירו למבוגר + עלות הסעה", lat:36.457114, lng:28.220728, pid:"ChIJgYrBVOJhlRQR4gbSvvCDPlk", q:"Aquarium of Rhodes", opt:true, dwell:35, defaultSkip:true},
- {t:"17:35", name:"One Euro Shop", sub:"מזכרות קטנות צמודות לקולנוע: מגנטים, מחזיקי מפתחות. הרבה דברים ב-1 אירו. מתאים לקטנים. 💶 לפי הקנייה", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true, game:"תקציב: כל ילד מקבל סכום קבוע ומחליט לבד מה קונים", dwell:8},
- {t:"17:45", name:"The Cartoon Store", sub:"מרצ'נדייז: דיסני, פוקימון, מארוול, נינטנדו. יקר יחסית. 💶 לפי הקנייה", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true, dwell:10},
  {t:"18:00", name:"Karabáki", sub:"ציוד יצירה, קלפי פוקימון ויו-גי-הו, מנגה. מתאימה לגדולים. מחירים טובים. 💶 לפי הקנייה", lat:36.448853, lng:28.220362, pid:"ChIJDSBAAo5hlRQRZcr_USo1ttM", q:"Karabaki Rhodes", shop:true, dwell:12},
+ {t:"", name:"האקווריום של רודוס", sub:"בניין ארט-דקו משנות ה-30, בנוי כמו מערה תת-ימית, 40 בריכות עם דגים ים-תיכוניים, תמנונים וצבי ים. קטן — 20-30 דקות מספיקות. רחוק בקצה הצפוני — ברוב הסיכויים ניקח הסעה/מונית קצרה במקום ללכת ברגל (הליכה מוסיפה כמעט שעה להלוך-חזור). 💶 6.5 אירו למבוגר + עלות הסעה", lat:36.457114, lng:28.220728, pid:"ChIJgYrBVOJhlRQR4gbSvvCDPlk", q:"Aquarium of Rhodes", opt:true, dwell:35, defaultSkip:true},
+ {t:"17:45", name:"The Cartoon Store", sub:"מרצ'נדייז: דיסני, פוקימון, מארוול, נינטנדו. יקר יחסית. 💶 לפי הקנייה", lat:36.447830, lng:28.222249, pid:"ChIJdVUqt4ZhlRQR5QrmW-xSyuM", q:"The Cartoon Store Rhodes", shop:true, dwell:10},
+ {t:"17:35", name:"One Euro Shop", sub:"מזכרות קטנות צמודות לקולנוע: מגנטים, מחזיקי מפתחות. הרבה דברים ב-1 אירו. מתאים לקטנים. 💶 לפי הקנייה", lat:36.447988, lng:28.222856, pid:"ChIJZfk5T-9hlRQRTe5MsF0nylk", q:"One Euro Shop Rhodes", shop:true, game:"תקציב: כל ילד מקבל סכום קבוע ומחליט לבד מה קונים", dwell:8},
  {t:"18:25", name:"שער ד'אמבואז — כניסה לעיר העתיקה", sub:"גשר מעל חפיר יבש ושני מגדלים משנת 1512. מרגישים שנכנסים לטירה. 💶 חינם", lat:36.445999, lng:28.222468, pid:"ChIJ0QKQcwBhlRQR99ZuM26m6YE", q:"Gate d'Amboise Rhodes", game:"מתחילה \"ספירת השערים\": כמה שערים עוברים עד שער הים? ומשימת \"מרגל\": למצוא דלת עץ ישנה, סמל על קיר, חלון עם סורג", dwell:3},
- {t:"18:30", name:"רחוב האבירים", sub:"רחוב מרוצף מהמאה ה-14, בתי האבירים של כל מדינה עם סמלי מגן חרוטים על הקירות. 💶 חינם", lat:36.445052, lng:28.226834, pid:"ChIJmcCWrulhlRQRJroIX2OCo8Y", q:"Street of the Knights Rhodes", game:"ציד מגני אבירים: מי מוצא הכי הרבה. בונוס: מגן עם אריה, פרחי שושן (צרפת), צלב", dwell:15},
  {t:"18:50", name:"Geppetto's House", sub:"צעצועי עץ בעבודת יד — בובות, משחקים. סטייה של 3 דקות (Ippodamou 18). 💶 לפי הקנייה", lat:36.443306, lng:28.224101, pid:"ChIJ4YrA-uthlRQRy-es4fIRvjA", q:"Geppetto's House Rhodes", shop:true, dwell:8},
  {t:"19:05", name:"כיכר היפוקרטס ורחוב סוקרטוס", sub:"כיכר עם מזרקה, רחוב הקניות הראשי. מעבר, לא חובה לעצור. 💶 חינם להסתובב; מזכרות 3–10 אירו", lat:36.443649, lng:28.228290, pid:"ChIJiRh86elhlRQRt_HtFMgzFDA", q:"Hippocrates Square Rhodes", dwell:15},
  {t:"19:25", name:"שער הים — יציאה לנמל", sub:"השער הכי מרשים, שני מגדלים עגולים מול הנמל. 💶 חינם", lat:36.444082, lng:28.228281, pid:"ChIJVTmNDcJhlRQRVSw_DJwl2UM", q:"Sea Gate Rhodes", game:"סוף ספירת השערים — מי צדק? ותמונה קבוצתית מול השער", dwell:3},
@@ -287,26 +287,32 @@ const STOPS = [
 
 const gmLink = s => "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.q)+"&query_place_id="+s.pid;
 const dirLink = (from,to,ways) => "https://www.google.com/maps/dir/?api=1&travelmode=walking&origin="+from.lat+","+from.lng+"&destination="+to.lat+","+to.lng+"&waypoints="+ways.map(s=>s.lat+","+s.lng).join("|");
-(function(){
+function updateGoogleFrame(activeList){
   const c = s => s.lat+","+s.lng;
-  const mid = STOPS.slice(1,STOPS.length-1).map(c).join("+to:");
-  document.getElementById("gframe").src = "https://maps.google.com/maps?saddr="+c(STOPS[0])+"&daddr="+mid+"+to:"+c(STOPS[STOPS.length-1])+"&dirflg=w&hl=iw&output=embed";
-})();
+  const mid = activeList.slice(1,activeList.length-1).map(c).join("+to:");
+  document.getElementById("gframe").src = "https://maps.google.com/maps?saddr="+c(activeList[0])+"&daddr="+mid+"+to:"+c(activeList[activeList.length-1])+"&dirflg=w&hl=iw&output=embed";
+}
 
 // ---------- stops list ----------
 // ---------- order / skip state ----------
 let order = STOPS.map(s=>s); // mutable working order (references same objects)
 order.forEach(s=>{ s.skip = !!s.defaultSkip; });
 
+
 function hav(aLat,aLng,bLat,bLng){const R=6371000,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;const x=Math.sin(dLat/2)**2+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
-const AQ = STOPS[5]; // האקווריום — כנראה נוסעים אליו, לא הולכים
-const WALK_MPM = 70;      // מ' לדקה הליכה
-const DETOUR = 1.4;       // מקדם פיתולי רחוב אמיתי (מדוד מול ניווט אמיתי ברודוס העתיקה)
+const AQ = STOPS[7]; // האקווריום — כנראה נוסעים אליו, לא הולכים
+const WALK_MPM = 70;      // מ' לדקה הליכה (גיבוי להערכה)
+const DETOUR = 1.4;       // מקדם פיתולי רחוב (גיבוי להערכה)
 const STOP_BUFFER = 4;    // דקות "בלת"ים" בכל תחנה — תמונות, ריכוז המשפחה, תור קטן
+// זמני הליכה אמיתיים (רשת רחובות בפועל) לקטעים שנמדדו במסלול המקורי — לפי אינדקס בתוך STOPS
+const REAL_WALK = {"0-1":14,"1-2":7,"2-3":10,"3-4":1,"4-5":13,"5-6":7,"6-8":3,"8-9":1,"9-10":9,"10-11":7,"11-12":5,"12-13":1,"13-14":11};
 function walkMinBetween(a,b){
+  const ia=STOPS.indexOf(a), ib=STOPS.indexOf(b);
+  const key = Math.min(ia,ib)+"-"+Math.max(ia,ib);
+  if(REAL_WALK[key]!=null) return REAL_WALK[key]; // נתון אמיתי שנמדד
   const d = hav(a.lat,a.lng,b.lat,b.lng);
   if(a===AQ||b===AQ) return Math.max(3, Math.round(d/200)); // קטע לאקווריום — כנראה נסיעה קצרה, לא הליכה
-  return Math.max(2, Math.round(d*DETOUR/WALK_MPM));
+  return Math.max(2, Math.round(d*DETOUR/WALK_MPM)); // הערכה לקטעים ללא נתון מדוד (למשל אחרי שינוי סדר)
 }
 
 function recomputeTimes(){
@@ -431,6 +437,7 @@ function updateMap(){
       .bindPopup('<b>'+label+'. '+s.name+'</b><br><b>'+timeStr+'</b> — '+s.sub+'<br><a href="'+gmLink(s)+'" target="_blank">📷 תמונות, ביקורות וניווט</a>',{maxWidth:280});
   });
   if(pts.length) lmap.fitBounds(L.latLngBounds(STOPS.map(s=>[s.lat,s.lng])).pad(0.12));
+  if(active.length>1) updateGoogleFrame(active);
 }
 
 let gpsPos=null;
