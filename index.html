@@ -123,6 +123,25 @@
   .prog .big{font-size:1.05rem;font-weight:700;margin-top:6px;}
   .prog .ok{color:var(--green);} .prog .late{color:var(--coral);} .prog .early{color:#1f6fa8;}
   .prog .muted{color:#7a8b94;font-size:.82rem;}
+  /* before-you-go info */
+  .info{padding:14px 16px;}
+  .info h2{font-size:1rem;color:var(--sea-deep);margin-bottom:6px;}
+  .info ul{list-style:none;}
+  .info li{font-size:.9rem;line-height:1.55;padding:4px 0;border-bottom:1px dashed #eee6d6;}
+  .info li:last-child{border-bottom:none;}
+  /* undecided day */
+  .undecided{background:#fff4e0;border:2px dashed #e0a43a;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.9rem;line-height:1.55;color:#7a5412;}
+  .undecided b{color:#a86a00;}
+  .opt{border:1px solid #d6e7ef;border-radius:12px;padding:12px 14px;margin-top:10px;background:#fff;}
+  .opt h4{font-size:.95rem;color:var(--sea-deep);margin-bottom:6px;}
+  .opt .meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .opt .meta span{font-size:.76rem;background:var(--foam);border:1px solid #d6e7ef;border-radius:99px;padding:2px 9px;color:#3d5a6a;}
+  .opt .why{font-size:.86rem;color:#4d6675;line-height:1.5;}
+  .opt.b{background:#fdf7e8;border-color:#ecdcb4;}
+  .decide{margin-top:10px;background:var(--foam);border-radius:12px;padding:10px 14px;}
+  .decide h4{font-size:.92rem;color:var(--sea-deep);margin-bottom:4px;}
+  .decide label{display:flex;gap:8px;align-items:flex-start;font-size:.88rem;line-height:1.5;padding:3px 0;cursor:pointer;}
+  .decide input{margin-top:4px;width:16px;height:16px;flex:0 0 auto;}
   footer{text-align:center;margin-top:30px;font-size:.85rem;color:#95a3ab;}
 </style>
 </head>
@@ -133,6 +152,20 @@
   <p>מנו ספנות · יציאה מנמל חיפה, שער 5</p>
 </header>
 <main>
+
+<section class="card">
+  <details class="info dayd"><summary><h3>📌 חשוב לדעת לפני שיוצאים</h3></summary>
+    <ul>
+      <li>🛂 <b>דרכונים</b> — לבדוק שבתוקף לפחות חצי שנה מיום החזרה</li>
+      <li>💶 <b>מטבע: אירו</b> — כדאי קצת מזומן לחנויות קטנות ולמוניות</li>
+      <li>🕐 <b>שעון:</b> ביוון השעה זהה לישראל — אין צורך לשנות</li>
+      <li>📵 <b>סלולר בים:</b> לכבות "נתונים בנדידה" כשהאונייה בלב ים — הרשת הימית יקרה מאוד. ביבשה ביוון — לפי חבילת החו"ל שלכם</li>
+      <li>🆘 <b>חירום ביוון: 112</b></li>
+      <li>🪪 <b>רישיון נהיגה בינלאומי + ישראלי</b> — למי שרוצה לנהוג בבאגי/רייזר בכרתים</li>
+      <li>🧾 ביטוח נסיעות לכל המשפחה</li>
+    </ul>
+  </details>
+</section>
 
 <section class="card">
 
@@ -223,30 +256,65 @@
 
   <!-- ===================== CRETE ===================== -->
   <div class="day">
-    <details class="dayd" data-date="29/9"><summary><h3><span class="d">יום ג'</span> 29/9 — כרתים 🇬🇷</h3></summary>
+    <details class="dayd" data-date="29/9"><summary><h3><span class="d">יום ג'</span> 29/9 — כרתים 🇬🇷 <span style="font-size:.75rem;color:#a86a00;">⏳ לא סגור</span></h3></summary>
     <ul>
       <li class="todo">תוכנית בוקר באונייה — יעודכן</li>
       <li><span class="t">10:30</span> עגינה בכרתים — אגיוס ניקולאוס</li>
       <li class="note">🪪 בירידה לחוף: מנו קארד, מים, קרם הגנה — ולחזור לפני שעת ההפלגה</li>
+      <li><span class="t">19:00</span> ⚠️ יעד חזרה לאונייה — שעה לפני ההפלגה (לוודא באונייה את שעת "כולם על הסיפון")</li>
       <li><span class="t">20:00</span> הפלגה מכרתים</li>
     </ul>
 
-    <div class="plan">
-      <h4>🟢 תוכנית A (המומלצת): אגיוס ניקולאוס עצמה — הכל ברגל</h4>
-      <div class="why">הנמל נמצא ממש ליד מרכז העיר, ואגם ווליסמני במרחק 10-5 דקות הליכה. תוכנית רגועה מאוד שמתאימה לכל הגילאים.</div>
+    <div class="undecided">⏳ <b>היום הזה עוד לא סגור.</b> הבסיס בטוח: העיר, האגם והטיילת צמודים לנמל וכולם יכולים ללכת ברגל. מעבר לזה יש כמה אפשרויות — בוחרים אחת או משלבים.</div>
+
+    <div class="opt">
+      <h4>🟢 הבסיס: אגיוס ניקולאוס ברגל</h4>
+      <div class="meta"><span>🚶 ברגל</span><span>💶 חינם</span><span>👨‍👩‍👧 מתאים לכולם</span></div>
       <ul>
         <li><span class="t">11:00</span> יורדים מהספינה</li>
-        <li><span class="t">12:30-11:10</span> אגם ווליסמני והטיילת</li>
-        <li><span class="t">14:00-12:30</span> חוזרים לאונייה לארוחת צהריים ומנוחה — הנמל צמוד לעיר, הליכה של כמה דקות</li>
-        <li><span class="t">16:30-14:00</span> פעילות אחר הצהריים: מפעל שמן הזיתים Spiridi (קרוב, כ-30-40 דקות) — ואולי גם רכיבת סוסים בפורני ו/או סיבוב בבאגי (בהמתנה לאישור זמינות מהחברות)</li>
-        <li><span class="t">17:00-16:30</span> חזרה לספינה — נשארות 3 שעות ביטחון עד ההפלגה ב-20:00</li>
+        <li><span class="t">12:30-11:10</span> אגם ווליסמני (5–10 דקות הליכה) והטיילת</li>
+        <li><span class="t">14:00-12:30</span> חוזרים לאונייה לארוחת צהריים ומנוחה — הנמל צמוד לעיר</li>
+        <li><span class="t">14:00 ואילך</span> אחת מהאפשרויות למטה — או פשוט מנוחה</li>
       </ul>
-      <div class="why">💡 אופציה נוספת, עדיין לא מתוכננת: סירת "הצוללת" (Creta Semi-Submarine) — יוצאת מהנמל, יציאות 11:30/13:30/15:30, כ-1:25 שעות, מאכילים דגים ורואים אותם דרך חלונות מתחת לקו המים. 💶 כ-16.5 אירו מבוגר, 11.5 ילד 6–12, 6.5 ילד 2–5.</div>
     </div>
 
-    <div class="plan alt">
-      <h4>🟡 תוכנית B (למי שרוצה משהו מיוחד): ספינלונגה</h4>
-      <div class="why">חשוב לדעת: הליכה על אבנים, מדרגות ושיפועים באי — לא אידיאלי למי שמתקשה בהליכה. אם עושים — עדיף לא לצאת בסירה מאגיוס ניקולאוס (יותר משעה לכל כיוון), אלא מונית לפלאקה ומשם שיט קצר של 15-10 דקות לאי. עם שעות ההפלגה שלנו צריך לתזמן בזהירות רבה.</div>
+    <div class="opt">
+      <h4>🫒 מפעל שמן הזיתים Spiridi</h4>
+      <div class="meta"><span>🚕 קרוב, כ-30–40 דקות</span><span>⏱️ 2–3 שעות</span><span>👨‍👩‍👧 מתאים לכולם</span></div>
+      <div class="why">פעילות רגועה אחר הצהריים. לבדוק שעות פתיחה ואיך מגיעים.</div>
+    </div>
+
+    <div class="opt">
+      <h4>🐴 רכיבת סוסים בפורני</h4>
+      <div class="meta"><span>⏳ ממתין לאישור זמינות</span><span>💶 בתשלום</span></div>
+      <div class="why">אפשר לשלב עם המפעל אחר הצהריים. מחכים לתשובה מהחברה.</div>
+    </div>
+
+    <div class="opt">
+      <h4>🏎️ באגי / רייזרים (RZR)</h4>
+      <div class="meta"><span>⏳ ממתין לאישור זמינות</span><span>💶 בתשלום</span><span>🪪 חובה רישיון בינלאומי</span></div>
+      <div class="why">⚠️ <b>כל מי שנוהג צריך רישיון נהיגה בינלאומי</b> — ולהביא איתו גם את הרישיון הישראלי. בלי זה לא ייתנו לנהוג. מי שאין לו יכול לשבת ליד הנהג. אפשר לשלב עם המפעל אחר הצהריים.</div>
+    </div>
+
+    <div class="opt">
+      <h4>🐠 "הצוללת" — Creta Semi-Submarine</h4>
+      <div class="meta"><span>⚓ יוצאת מהנמל</span><span>⏱️ כ-1:25 שעות</span><span>🕐 11:30 / 13:30 / 15:30</span></div>
+      <div class="why">מאכילים דגים ורואים אותם דרך חלונות מתחת לקו המים. 💶 כ-16.5 אירו מבוגר, 11.5 ילד 6–12, 6.5 ילד 2–5. הילדים יאהבו — ולא צריך נסיעה.</div>
+    </div>
+
+    <div class="opt b">
+      <h4>🏰 ספינלונגה (למי שרוצה משהו מיוחד)</h4>
+      <div class="meta"><span>🚕 מונית לפלאקה + שיט 10–15 דק'</span><span>⏱️ חצי יום</span><span>⚠️ הליכה קשה</span></div>
+      <div class="why">הליכה על אבנים, מדרגות ושיפועים באי — לא אידיאלי למי שמתקשה בהליכה. עדיף לא לצאת בסירה מאגיוס ניקולאוס (יותר משעה לכל כיוון). עם שעות ההפלגה צריך לתזמן בזהירות.</div>
+    </div>
+
+    <div class="decide">
+      <h4>✅ מה נשאר להחליט</h4>
+      <label><input type="checkbox" data-k="c1"> לקבל תשובה על סוסים / באגי / רייזרים</label>
+      <label><input type="checkbox" data-k="c5"> לבדוק שלכל מי שנוהג בבאגי יש רישיון בינלאומי (ולהביא גם את הישראלי)</label>
+      <label><input type="checkbox" data-k="c2"> להחליט: מפעל שמן / צוללת / ספינלונגה / מנוחה</label>
+      <label><input type="checkbox" data-k="c3"> להזמין מראש מה שצריך (מונית, כרטיסים)</label>
+      <label><input type="checkbox" data-k="c4"> לעדכן את הדף עם התוכנית הסופית</label>
     </div>
 
     </details>
@@ -264,7 +332,9 @@
   <div class="day">
     <details class="dayd" data-date="1/10"><summary><h3><span class="d">יום ה'</span> 1/10 — חזרה הביתה 🇮🇱</h3></summary>
     <ul>
-      <li class="note">פינוי חדרים</li>
+      <li class="note">🧳 בערב שלפני: מוציאים מזוודות לפי הוראות האונייה, ומשאירים בתיק היד בגדים ללילה ולבוקר</li>
+      <li class="note">🪪 לוודא שקיבלנו את הדרכונים וסוגרים את החשבון במנו קארד</li>
+      <li class="note">פינוי חדרים — השעה תימסר באונייה</li>
       <li><span class="t">8:00</span> הגעה לנמל חיפה</li>
     </ul>
     </details>
@@ -518,6 +588,10 @@ document.getElementById("lockBtn").addEventListener("click",()=>setMapLock(!mapU
   days.forEach(x=>x.addEventListener("toggle",()=>{ if(x.open && lmap){ setTimeout(()=>{lmap.invalidateSize(); updateMap();},50); } }));
   if(opened && opened.open && lmap) setTimeout(()=>lmap.invalidateSize(),100);
 })();
+document.querySelectorAll(".decide input").forEach(c=>{
+  try{c.checked=localStorage.getItem("dec_"+c.dataset.k)==="1";}catch(e){}
+  c.addEventListener("change",()=>{try{localStorage.setItem("dec_"+c.dataset.k,c.checked?"1":"0");}catch(e){}});
+});
 renderStopsList();
 updateMap();
 render(); setInterval(render,30000);
